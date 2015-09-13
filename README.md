@@ -18,7 +18,8 @@ pip install -e .
 set PATH=%PATH%;.\myo-sdk-win-0.9.0\bin
 python myo-python\examples\hello_myo.py
 
+![Alt text](/output.PNG?raw=true "Myo Listener Output")
 
 This project is licensed under the GNU License. Copyright &copy; 2015 Shafi Ulla
 
-![Alt text](/output.PNG?raw=true "Optional Title")
+
