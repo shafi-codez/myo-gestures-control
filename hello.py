@@ -13,7 +13,7 @@ class Listener(libmyo.DeviceListener):
     stop the Hub.
     """
 
-    interval = 0.3  # Output only 0.05 seconds
+    interval = 0.05  # Output only 0.05 seconds
 
     def __init__(self):
         super(Listener, self).__init__()
@@ -24,6 +24,20 @@ class Listener(libmyo.DeviceListener):
         self.rssi = None
         self.emg = None
         self.last_time = 0
+
+    @staticmethod
+    def open_google_on_fingers_spread():
+        import subprocess
+
+        subprocess.call(
+            [r'C:\Program Files (x86)\Mozilla Firefox\Firefox.exe', '-new-tab', 'http://www.monkeybars.io/'])
+
+    @staticmethod
+    def post_data_on_double_tap():
+        import requests
+
+        r = requests.get('http://jsonplaceholder.typicode.com/posts?userId=1')
+        print(r.content)
 
     def output(self):
         ctime = time.time()
@@ -42,7 +56,7 @@ class Listener(libmyo.DeviceListener):
         if self.emg:
             for comp in self.emg:
                 parts.append(str(comp).ljust(5))
-        print('\r' + ''.join('[ <- {0} ->]'.format(p) for p in parts), end='')
+        print('\r' + ''.join('[ {0} ]'.format(p) for p in parts), end='')
         sys.stdout.flush()
 
     def on_connect(self, myo, timestamp, firmware_version):
@@ -57,12 +71,28 @@ class Listener(libmyo.DeviceListener):
         self.output()
 
     def on_pose(self, myo, timestamp, pose):
-        if pose == libmyo.Pose.double_tap:
-            myo.set_stream_emg(libmyo.StreamEmg.enabled)
-            self.emg_enabled = True
-        elif pose == libmyo.Pose.fingers_spread:
-            print("MY FINGERS ARE SPREAD !!!!!!!!!!!!!!!")
+        if pose == libmyo.Pose.fingers_spread:
+            print("\nAction Captured >> FINGER SPREAD\n")
+            self.open_google_on_fingers_spread()
             myo.set_stream_emg(libmyo.StreamEmg.disabled)
+            self.emg_enabled = False
+            self.emg = None
+        elif pose == libmyo.Pose.double_tap:
+            print("\nAction Captured >> DOUBLE TAP\n")
+            self.post_data_on_double_tap()
+            myo.set_stream_emg(libmyo.StreamEmg.enabled)
+            self.post_data_on_double_tap()
+            self.emg_enabled = True
+        elif pose == libmyo.Pose.wave_in:
+            print("\nAction Captured >> WAVE IN\n")
+            self.emg_enabled = False
+            self.emg = None
+        elif pose == libmyo.Pose.wave_out:
+            print("\nAction Captured >> WAVE OUT\n")
+            self.emg_enabled = False
+            self.emg = None
+        elif pose == libmyo.Pose.fist:
+            print("\nAction Captured >> HOLD FIST\n")
             self.emg_enabled = False
             self.emg = None
         self.pose = pose
@@ -137,7 +167,6 @@ class Listener(libmyo.DeviceListener):
         """
         Called when the warmup completed.
         """
-
 
 def main():
     print("Connecting to Myo ... Use CTRL^C to exit.")

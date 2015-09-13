@@ -21,3 +21,4 @@ python myo-python\examples\hello_myo.py
 
 This project is licensed under the GNU License. Copyright &copy; 2015 Shafi Ulla
 
+![Alt text](/output.PNG?raw=true "Optional Title")
