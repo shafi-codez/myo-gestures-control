@@ -4,7 +4,7 @@ import myo as libmyo;
 
 libmyo.init()
 import time
-import sys
+import sys, os
 
 
 class Listener(libmyo.DeviceListener):
@@ -35,9 +35,33 @@ class Listener(libmyo.DeviceListener):
     @staticmethod
     def post_data_on_double_tap():
         import requests
-
         r = requests.get('http://jsonplaceholder.typicode.com/posts?userId=1')
         print(r.content)
+
+    @staticmethod
+    def create_file_on_wave_in():
+        fileName = "C:\Users\sulla\Documents\myo\processing-3.0b6-windows64\processing-3.0b6\modes\java\examples\Topics\File IO\LoadFile1\data\positions.txt"
+        if os.path.isfile(fileName) is True:
+            file_var = open(fileName, "w+")
+            file_var.write("1")
+            print("\nFile Name:", file_var.name)
+            print("\nClosed :", file_var.closed)
+
+    @staticmethod
+    def create_file_on_wave_out():
+        fileName = "C:\Users\sulla\Documents\myo\processing-3.0b6-windows64\processing-3.0b6\modes\java\examples\Topics\File IO\LoadFile1\data\positions.txt"
+        if os.path.isfile(fileName) is True:
+            file_var = open(fileName, "w+")
+            file_var.write("0")
+            print("\nFile Name:", file_var.name)
+            print("\nClosed :", file_var.closed)
+
+
+    @staticmethod
+    def open_media_file_on_fist():
+        import os
+
+        os.startfile('C:\Users\sulla\Videos\Spartan Race Super - Chicago 2014.mp4')
 
     def output(self):
         ctime = time.time()
@@ -85,14 +109,17 @@ class Listener(libmyo.DeviceListener):
             self.emg_enabled = True
         elif pose == libmyo.Pose.wave_in:
             print("\nAction Captured >> WAVE IN\n")
+            self.create_file_on_wave_in()
             self.emg_enabled = False
             self.emg = None
         elif pose == libmyo.Pose.wave_out:
             print("\nAction Captured >> WAVE OUT\n")
+            self.create_file_on_wave_out()
             self.emg_enabled = False
             self.emg = None
         elif pose == libmyo.Pose.fist:
             print("\nAction Captured >> HOLD FIST\n")
+            self.open_media_file_on_fist()
             self.emg_enabled = False
             self.emg = None
         self.pose = pose
