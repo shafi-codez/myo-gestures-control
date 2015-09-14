@@ -1,6 +1,5 @@
 myo/dist/
-*idea
-*.idea/
+
 
 # Shared libraries
 *.dll
